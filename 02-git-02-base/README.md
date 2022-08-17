@@ -130,9 +130,22 @@ origin-https	https://github.com/andrey-borue/devops-netology.git (push)
 1. Отправьте изменения в репозиторий и посмотрите, как изменится схема на странице https://github.com/YOUR_ACCOUNT/devops-netology/network 
 и как изменится вывод команды `git log`.
 
+## Решение
+
+1. origin->master уже была активной, но переключил трекинг на gitlab командой: `git branch -u origin/master`.
+2. Нашел кеш: `1619776` коммита `Prepare to delete and move`:
+![output](./img/git-log-1.png)
+3. Выполнил `git checkout 1619776` для перехода на данный коммит.
+4. Создан новую ветку `fix`, командой: `git switch -c fix`.
+5. Отправил созданную ветку на репозиторий github командой: `git push origin fix`:
+![output](./img/network-graph-1.png)
+6. Изменил файл `README.md`, добавив новую строчку: `#### new line`.
+7. Отправил изменения в репозиторий командой: `git push origin fix`:
+![output](./img/network-graph-2.png)
+
 ## Задание №4 – Упрощаем себе жизнь
 
-Давайте попробуем поработь с Git при помощи визуального редактора. 
+Давайте попробуем поработать с Git при помощи визуального редактора. 
 
 1. В используемой нами IDE Py Charm откройте визуальный редактор работы с git, находящийся в меню View -> Tool Windows -> Git.
 1. Измените какой-нибудь файл, и он сразу появится на вкладке `Local Changes`, отсюда можно выполнить коммит нажав на кнопку внизу этого диалога. 
