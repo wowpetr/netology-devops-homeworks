@@ -108,6 +108,14 @@ origin-https	https://github.com/andrey-borue/devops-netology.git (push)
     * В гитлабе – https://gitlab.com/YOUR_ACCOUNT/devops-netology/-/tags
     * В битбакете – список тегов расположен в выпадающем меню веток на отдельной вкладке. 
 
+## Решение
+
+1. Создал неаннотированный тег `v0.0` на HEAD коммите командой: `git tag v0.0`.   
+Созданный тег отправил во все созданные репозитории командами: `git push origin v0.0`, `git push gitlab v0.0`, `git push bitbucket v0.0`.
+2. Создал аннотированный тег `v0.1` на HEAD коммите командой: `git tag -a v0.1`.  
+Созданный тег отправил во все созданные репозитории командами: `git push origin v0.1`, `git push gitlab v0.1`, `git push bitbucket v0.1`.
+3. Нашел созданные теги в Web-интерфейсе всех трех площадок (GitHub, GitLab, Bitbucket).
+
 ## Задание №3 – Ветки 
 
 Давайте посмотрим, как будет выглядеть история коммитов при создании веток. 
