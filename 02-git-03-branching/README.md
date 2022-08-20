@@ -106,8 +106,7 @@ echo "====="
 а с rebase бывают сложности, поэтому давайте смержим все наработки в `main` и разрешим конфликты. 
 
 Если все было сделано правильно, то на странице `network` в гитхабе, находящейся по адресу 
-`https://github.com/ВАШ_ЛОГИН/ВАШ_РЕПОЗИТОРИЙ/network` будет примерно такая схема:
-![Созданы обе ветки](img/01.png)
+`https://github.com/ВАШ_ЛОГИН/ВАШ_РЕПОЗИТОРИЙ/network` 
 
 #### Merge
 Сливаем ветку `git-merge` в main и отправляем изменения в репозиторий, должно получиться без конфликтов:
@@ -122,9 +121,7 @@ Enumerating objects: 1, done.
 Counting objects: 100% (1/1), done.
 Writing objects: 100% (1/1), 223 bytes | 223.00 KiB/s, done.
 Total 1 (delta 0), reused 0 (delta 0), pack-reused 0
-```  
-В результате получаем такую схему:
-![Первый мерж](img/02.png)
+```
 
 #### Rebase
 1. А перед мержем ветки `git-rebase` выполним ее `rebase` на main. Да, мы специально создали
@@ -238,7 +235,12 @@ Fast-forward
 
 ## Решение
 
-1. Создал каталог [branching](./branching) и в нем два файла [merge.sh](./branching/merge.sh) и [rebase.sh](./branching/rebase.sh).
+Последовательно выполнены все шаги.  
 
-
+1. Схема ветвления до выполнения merge:  
+![output](./img/network-1.png)
+2. Схема ветвления после выполнения merge методом fast-forward:  
+![output](./img/network-2.png)
+3. Схема ветвления после выполнения merge методом rebase после улаживания конфликтов:  
+![output](./img/network-3.png)
 ---
