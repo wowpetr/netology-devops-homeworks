@@ -26,14 +26,14 @@
 4. Между тегами v0.12.23 и v0.12.24 нашел следующие коммиты: `33ff1c03bb`, `b14b74c493`, `3f235065b9`, `6ae64e247b`, `5c619ca1ba`, `06275647e2`, `d5f9411f51`, `4b6d06cc5d`, `dd01a35078`, `225466bc3e`:
 ![output](./img/git-show-4.png)
 Данные коммиты найдены с помощью команды: `git log v0.12.23..v0.12.24 --one-line`.
-5. Для поиска коммита, где функция `providerSource` была создана, я сначала определил имя файла командой: `git grep -n 'func providerSource('`:
+5. Для поиска коммита, где функция `providerSource` была создана, я сначала определил имя файла командой: `git grep -n 'func providerSource('`:  
 ![output](./img/git-grep.png)
 Затем найденное имя файла `provider_source.go`, использовал в команде: `git log -L:providerSource:provider_source.go` первый коммит `8c928e83589d90a031f811fae52a81be7153e82f` (конец списка) и является коммитом, где функция впервые была определена.  
-Также можно воспользоваться командой: `git log -S 'func providerSource('`:
+Также можно воспользоваться командой: `git log -S 'func providerSource('`:  
 ![output](./img/git-log.png)
-6. Для поиска всех коммитов изменений функции `globalPluginDirs` я использовал команду: `git grep -n 'func globalPluginDirs('`:
+6. Для поиска всех коммитов изменений функции `globalPluginDirs` я использовал команду: `git grep -n 'func globalPluginDirs('`:  
 ![output](./img/git-grep-2.png)
-Затем найденное имя файла `plugins.go`, использовал в команде: `git log -L:globalPluginDirs:plugins.go -s --oneline` для вывода списка всех коммитов:
+Затем найденное имя файла `plugins.go`, использовал в команде: `git log -L:globalPluginDirs:plugins.go -s --oneline` для вывода списка всех коммитов:  
 ![output](./img/git-log-2.png)
 7. Автором функции `synchronizedWriters` является `Martin Atkins` в коммите `5ac311e2a91e381e2f52234668b49ba670aa0fe5`, но эта функция и файл где она была описана уже удалена персоной `James Bardin` в коммите `bdfea50cc85161dea41be0fe3381fd98731ff786`. 
 Для поиска использовалась команда `git log -S 'func synchronizedWriters' --oneline`.
