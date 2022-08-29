@@ -32,7 +32,7 @@
 Также можно воспользоваться командой: `git log -S 'func providerSource('`:  
 ![output](./img/git-log.png)
 6. Для поиска всех коммитов изменений функции `globalPluginDirs` я использовал команду: `git grep -n 'func globalPluginDirs('`:  
-![output](./img/git-grep-2.png)
+![output](./img/git-grep-2.png)  
 Затем найденное имя файла `plugins.go`, использовал в команде: `git log -L:globalPluginDirs:plugins.go -s --oneline` для вывода списка всех коммитов:  
 ![output](./img/git-log-2.png)
 7. Автором функции `synchronizedWriters` является `Martin Atkins` в коммите `5ac311e2a91e381e2f52234668b49ba670aa0fe5`, но эта функция и файл где она была описана уже удалена персоной `James Bardin` в коммите `bdfea50cc85161dea41be0fe3381fd98731ff786`. 
