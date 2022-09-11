@@ -37,13 +37,14 @@
 
     #### Решение:
     ```bash
-    wowpetr@lpau:~$ ping localhost &> ping.log &
+    wowpetr@lpau:~$ ping localhost > ping.log &
     [1] 10462
     wowpetr@lpau:~$ rm ping.log
     wowpetr@lpau:~$ sudo lsof -p 10462 | grep ping.log
-    ping    10462 wowpetr    2w   REG    8,2     7325 12464194 /home/wowpetr/ping.log (deleted)
-    wowpetr@lpau:~$ echo "" | sudo tee /proc/10462/fb/2
+    ping    10462 wowpetr    1w   REG    8,2     7325 12464194 /home/wowpetr/ping.log (deleted)
+    wowpetr@lpau:~$ sudo truncate -s 0 /proc/10462/fd/1
     ```
+    После выполнения `truncate` файл оказался обнуленным, когда я попробовать его прочитать через `cat /proc/10462/fd/1` как и требовалось, но размер в lsof в колонке SIZE не уменьшился. В файл продолжалась запись.
 ---
 4. Занимают ли зомби-процессы какие-то ресурсы в ОС (CPU, RAM, IO)?
 
