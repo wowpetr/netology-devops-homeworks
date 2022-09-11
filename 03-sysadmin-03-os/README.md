@@ -37,14 +37,20 @@
 
     #### Решение:
     ```bash
-    wowpetr@lpau:~$ ping localhost > ping.log &
+    vagrant@vagrant~$ ping localhost > ping.log &
     [1] 10462
-    wowpetr@lpau:~$ rm ping.log
-    wowpetr@lpau:~$ sudo lsof -p 10462 | grep ping.log
+    vagrant@vagrant:~$ rm ping.log
+    vagrant@vagrant:~$ sudo lsof -p 10462 | grep ping.log
     ping    10462 wowpetr    1w   REG    8,2     7325 12464194 /home/wowpetr/ping.log (deleted)
-    wowpetr@lpau:~$ sudo truncate -s 0 /proc/10462/fd/1 # или echo -n | sudo tee /proc/10462/fd/1
+    vagrant@vagrant:~$ sudo truncate -s 0 /proc/10462/fd/1 # или echo -n | sudo tee /proc/10462/fd/1
     ```
-    После выполнения `truncate` файл оказался обнуленным, как и требовалось (если его прочитать через `cat /proc/10462/fd/1`), но размер в lsof в колонке SIZE не уменьшился. В файл продолжалась запись.
+    После выполнения `truncate` файл оказался обнуленным, как и требовалось (если его прочитать через `cat /proc/10462/fd/1`), но размер в lsof в колонке SIZE не уменьшился. В файл продолжалась запись.  
+
+    Также добился удаления файла, воспользовавшись утилитой `reredirect` (https://github.com/jerome-pouiller/reredirect), и командой:
+    ```bash
+    vagrant@vagrant:~$ sudo reredirect -N -o /dev/null 10462
+    ```
+    Альтернативно, также закрывал дескриптор при помощи `gdb -p 10462` и команды в его интерпретаторе: `p close(1)`. 
 ---
 4. Занимают ли зомби-процессы какие-то ресурсы в ОС (CPU, RAM, IO)?
 
