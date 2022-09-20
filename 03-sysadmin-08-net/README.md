@@ -63,7 +63,7 @@
     LISTEN    0         4096                     *:9100                  *:*       users:(("node_exporter",pid=1249,fd=3))
     LISTEN    0         128                   [::]:22                 [::]:*       users:(("sshd",pid=713,fd=4))
     ```
-    Открыты следующие порты TCP: 53 (systemd-resolve) - DNS, 22 (sshd) - SSH Сервер, 9100 (node_exporter) - HTTP /metrics.
+    Открыты следующие TCP порты: 53 (systemd-resolve) - DNS, 22 (sshd) - SSH Сервер, 9100 (node_exporter) - HTTP /metrics.
 
 4. Проверьте используемые UDP сокеты в Ubuntu, какие протоколы и приложения используют эти порты?
     #### Решение:
@@ -73,7 +73,7 @@
     UNCONN   0         0             127.0.0.53%lo:53              0.0.0.0:*       users:(("systemd-resolve",pid=625,fd=12))
     UNCONN   0         0            10.0.2.15%eth0:68              0.0.0.0:*       users:(("systemd-network",pid=1624,fd=22))
     ```
-    Открыты следующие порты UDP: 53 (systemd-resolve) - DNS, 68 (systemd-network) - BOOTP / DHCP.
+    Открыты следующие UDP порты: 53 (systemd-resolve) - DNS, 68 (systemd-network) - BOOTP / DHCP.
 
 5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали. 
     #### Решение:
