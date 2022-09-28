@@ -50,7 +50,7 @@ HOST: stackoverflow.com
     
     #### Решение:
     При запросе того же сайта в инспекторе первый ответ HTTP сервера возвращает тот же код - `301 Moved Permanently`:  
-    ![chrome](./img/chrome-inspect-1.png)
+    ![chrome](./img/chrome-inspect-1.png)  
     Общее время загрузки страницы: `701мс`.  
     Наибольшее время пришлось на второй запрос: `https://stackoverflow.com/`, который занял `406мс`:  
     ![chrome](./img/chrome-inspect-2.png)
