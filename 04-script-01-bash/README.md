@@ -107,6 +107,7 @@
         if ((res!=0))
         then
             echo "${ip}" > error
+            exit $res
         fi
     done
     ```
@@ -117,8 +118,6 @@
     10/05/22 19:13:13 - host: 192.168.0.1 - attempt: 3 - exit code: 28
     10/05/22 19:13:18 - host: 192.168.0.1 - attempt: 4 - exit code: 28
     10/05/22 19:13:23 - host: 192.168.0.1 - attempt: 5 - exit code: 28
-    10/05/22 19:13:23 - host: 173.194.222.113 - attempt: 1 - exit code: 0
-    10/05/22 19:13:23 - host: 87.250.250.242 - attempt: 1 - exit code: 0
     ```
     Содержимое curl.log:
     ```
