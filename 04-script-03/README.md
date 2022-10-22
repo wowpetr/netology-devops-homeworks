@@ -63,7 +63,7 @@ def save_results_to_logs():
     Saves results to JSON_LOG and YAML_LOG files
     """
     with open(JSON_LOG, 'w') as json_file:
-        json.dump(results, json_file)
+        json.dump(results, json_file, indent=2)
     with open(YAML_LOG, 'w') as yaml_file:
         yaml.dump(results, yaml_file)
 
