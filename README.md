@@ -20,10 +20,11 @@
 [3.8 Компьютерные сети (лекция 3)](03-sysadmin-08-net/README.md)  
 [3.9 Элементы безопасности информационных систем](03-sysadmin-09-security/README.md)  
 4. Скриптовые языки и языки разметки: Python, Bash, YAML, JSON  
-[4.1. Командная оболочка Bash: Практические навыки](04-script-01-bash/README.md)  
-[4.2. Использование Python для решения типовых DevOps задач](04-script-02-py/README.md)  
-[4.3. Языки разметки JSON и YAML](04-script-03/README.md)  
+[4.1 Командная оболочка Bash: Практические навыки](04-script-01-bash/README.md)  
+[4.2 Использование Python для решения типовых DevOps задач](04-script-02-py/README.md)  
+[4.3 Языки разметки JSON и YAML](04-script-03/README.md)  
 
 ### Виртуализация, базы данных и Terraform
 5. Введение в виртуализацию  
-[5.1. Основы виртуализации](05-virt-01-basics/README.md)   
+[5.1 Основы виртуализации](05-virt-01-basics/README.md)   
+[5.2 Применение принципов IaC в работе с виртуальными машинами](05-virt-02-iac/README.md)   
