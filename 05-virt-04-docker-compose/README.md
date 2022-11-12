@@ -32,7 +32,7 @@ compute-default-zone: ru-central1-b
 ```
 3. Создал сеть и подсеть с помощью terraform:  
     network.tf
-    ```json
+    ```terraform
     resource "yandex_vpc_network" "netology-devops-network" {
       name = "net"
     }

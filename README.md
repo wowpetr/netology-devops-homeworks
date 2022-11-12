@@ -29,3 +29,4 @@
 [5.1 Основы виртуализации](05-virt-01-basics/README.md)   
 [5.2 Применение принципов IaC в работе с виртуальными машинами](05-virt-02-iac/README.md)   
 [5.3 Введение. Экосистема. Архитектура. Жизненный цикл Docker контейнера](05-virt-03-docker/README.md)   
+[5.4 Оркестрация группой Docker контейнеров на примере Docker Compose](05-virt-04-docker-compose/README.md)   
