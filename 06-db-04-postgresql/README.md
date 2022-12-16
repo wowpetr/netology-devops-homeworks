@@ -26,13 +26,13 @@
         image: postgres:13
         container_name: postgres13-db
         ports:
-        - 5432:5432
+            - 5432:5432
         volumes:
-        - ./pg_data:/var/lib/postgresql/data/pgdata
-        - ./pg_backup:/backup
+            - ./pg_data:/var/lib/postgresql/data/pgdata
+            - ./pg_backup:/backup
         environment:
-        POSTGRES_PASSWORD: 123
-        PGDATA: /var/lib/postgresql/data/pgdata
+            POSTGRES_PASSWORD: 123
+            PGDATA: /var/lib/postgresql/data/pgdata
         restart: always
     ```
 2. Подключился к контейнеру и командой:
