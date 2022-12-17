@@ -65,9 +65,9 @@ heap.options
 ❯ docker push wowpetr/elasticsearch:7
 ```
 #### Ссылка на образ
-https://hub.docker.com/repository/docker/wowpetr/elasticsearch
+https://hub.docker.com/r/wowpetr/elasticsearch
 
-#### Ответ elasticsearch на запрос пути `/`
+#### Ответ от Elasticsearch на запрос пути `/`
 ```bash
 ❯ docker run --rm -it -d --name elastic7 -p 9200:9200 wowpetr/elasticsearch:7              
 cccd2d09fb87fb3a5b2e14fc8bc6311d3f40bca20e649eb5aedcc6c8fdb50ae1
