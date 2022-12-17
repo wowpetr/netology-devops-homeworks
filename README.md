@@ -37,3 +37,4 @@
 [6.2 SQL](06-db-02-sql/README.md)  
 [6.3 MySQL](06-db-03-mysql/README.md)  
 [6.4 PostgreSQL](06-db-04-postgresql/README.md)  
+[6.5 Elasticsearch](06-db-05-elasticsearch/README.md)  
