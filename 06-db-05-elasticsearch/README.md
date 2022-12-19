@@ -90,13 +90,6 @@ cccd2d09fb87fb3a5b2e14fc8bc6311d3f40bca20e649eb5aedcc6c8fdb50ae1
   "tagline" : "You Know, for Search"
 }
 ```
-#### Удаление всех индексов
-```bash
-❯ curl -X DELETE "localhost:9200/_all?pretty"                                                                                      ✘ INT
-{
-  "acknowledged" : true
-}
-```
 
 ## Задача 2
 
@@ -201,6 +194,13 @@ ind-3                                                         3 r UNASSIGNED
 ind-3                                                         0 p STARTED     0   226b 172.17.0.2 netology_test
 ind-3                                                         0 r UNASSIGNED                      
 ind-3                                                         0 r UNASSIGNED
+```
+#### Удаление всех индексов
+```bash
+❯ curl -X DELETE "localhost:9200/_all?pretty"                                                                                      ✘ INT
+{
+  "acknowledged" : true
+}
 ```
 ## Задача 3
 
