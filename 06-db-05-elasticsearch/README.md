@@ -120,6 +120,81 @@ cccd2d09fb87fb3a5b2e14fc8bc6311d3f40bca20e649eb5aedcc6c8fdb50ae1
 При проектировании кластера elasticsearch нужно корректно рассчитывать количество реплик и шард,
 иначе возможна потеря данных индексов, вплоть до полной, при деградации системы.
 
+### Решение
+#### Добавление индексов
+```bash
+❯ curl -X PUT "localhost:9200/ind-1?pretty" -H 'Content-Type: application/json' -d' { "settings": { "number_of_shards": 1, "number_of_replicas": 0 } } '
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "ind-1"
+}
+❯ curl -X PUT "localhost:9200/ind-2?pretty" -H 'Content-Type: application/json' -d' { "settings": { "number_of_shards": 2, "number_of_replicas": 1 } } '
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "ind-2"
+}
+❯ curl -X PUT "localhost:9200/ind-3?pretty" -H 'Content-Type: application/json' -d' { "settings": { "number_of_shards": 4, "number_of_replicas": 2 } } '
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "ind-3"
+}
+```
+#### Индексы с их статусами
+```bash
+❯ curl -X GET "localhost:9200/_cat/indices?pretty" 
+green  open .geoip_databases Kgxr7VWFSIuM3ZV2J2wvdA 1 0 40 0 38.2mb 38.2mb
+green  open ind-1            HbrFVFyaQjCUCxCmRhCIBg 1 0  0 0   226b   226b
+yellow open ind-3            QTr0VZpCRXa_xhdD69hltA 4 2  0 0   904b   904b
+yellow open ind-2            XL8wqEuwS662dcATBCZmpg 2 1  0 0   452b   452b
+```
+#### Состояние кластера
+```bash
+❯ curl -X GET "localhost:9200/_cluster/health?pretty"
+{
+  "cluster_name" : "netology",
+  "status" : "yellow",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 10,
+  "active_shards" : 10,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 10,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 50.0
+}
+```
+Часть индексов в состоянии `Yellow` так как имеются `UNASSIGNED` реплики, которые не могут быть назначены поскольку у нас кластер состоит из одного узла:
+```bash
+❯ curl -X GET "localhost:9200/_cat/shards?pretty" 
+.ds-ilm-history-5-2022.12.19-000001                           0 p STARTED              172.17.0.2 netology_test
+ind-1                                                         0 p STARTED     0   226b 172.17.0.2 netology_test
+.ds-.logs-deprecation.elasticsearch-default-2022.12.19-000001 0 p STARTED              172.17.0.2 netology_test
+ind-2                                                         1 p STARTED     0   226b 172.17.0.2 netology_test
+ind-2                                                         1 r UNASSIGNED                      
+ind-2                                                         0 p STARTED     0   226b 172.17.0.2 netology_test
+ind-2                                                         0 r UNASSIGNED                      
+.geoip_databases                                              0 p STARTED    40 38.2mb 172.17.0.2 netology_test
+ind-3                                                         2 p STARTED     0   226b 172.17.0.2 netology_test
+ind-3                                                         2 r UNASSIGNED                      
+ind-3                                                         2 r UNASSIGNED                      
+ind-3                                                         1 p STARTED     0   226b 172.17.0.2 netology_test
+ind-3                                                         1 r UNASSIGNED                      
+ind-3                                                         1 r UNASSIGNED                      
+ind-3                                                         3 p STARTED     0   226b 172.17.0.2 netology_test
+ind-3                                                         3 r UNASSIGNED                      
+ind-3                                                         3 r UNASSIGNED                      
+ind-3                                                         0 p STARTED     0   226b 172.17.0.2 netology_test
+ind-3                                                         0 r UNASSIGNED                      
+ind-3                                                         0 r UNASSIGNED
+```
 ## Задача 3
 
 В данном задании вы научитесь:
@@ -149,3 +224,297 @@ cccd2d09fb87fb3a5b2e14fc8bc6311d3f40bca20e649eb5aedcc6c8fdb50ae1
 
 Подсказки:
 - возможно вам понадобится доработать `elasticsearch.yml` в части директивы `path.repo` и перезапустить `elasticsearch`
+
+### Решение
+
+#### Регистрация репозитория
+Дополнил elasticsearch.yml путем для репозиториев:
+```yml
+path.repo: ["/mount/backups"]
+```
+Дополнил Dockerfile командами создания пути репозитория:
+```docker
+RUN mkdir -p /mount/backups
+RUN chown elasticsearch:elasticsearch /mount/backups
+```
+После сборки нового образа и запуска контейнера произвел регистрацию репозитория:
+
+```bash
+❯ curl -X PUT "localhost:9200/_snapshot/netology_backup?pretty" -H 'Content-Type: application/json' -d'
+{
+  "type": "fs",
+  "settings": {
+    "location": "/mount/backups/snapshots"
+  }
+}
+'
+
+{
+  "acknowledged" : true
+}
+```
+#### Создание индекса `test` 
+```bash
+❯ curl -X PUT "localhost:9200/test?pretty" -H 'Content-Type: application/json' -d' { "settings": { "number_of_shards": 1, "number_of_replicas": 0 } } '
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "test"
+}
+❯ curl -X GET "localhost:9200/_cat/indices?pretty"
+green open .geoip_databases xMXnElRARLei4U4tUJFufQ 1 0 40 0 38.2mb 38.2mb
+green open test             ReoqnVUlSb-PEoHamZry_g 1 0  0 0   226b   226b
+```
+#### Создание snapshot'a кластера
+```bash
+❯ curl -X PUT "localhost:9200/_snapshot/netology_backup/%3Cmy_snapshot_%7Bnow%2Fd%7D%3E?wait_for_completion=true&pretty"
+{
+  "snapshot" : {
+    "snapshot" : "my_snapshot_2022.12.19",
+    "uuid" : "X5bnxVTcSiOsdEwz8saEow",
+    "repository" : "netology_backup",
+    "version_id" : 7170899,
+    "version" : "7.17.8",
+    "indices" : [
+      "test",
+      ".ds-ilm-history-5-2022.12.19-000001",
+      ".geoip_databases",
+      ".ds-.logs-deprecation.elasticsearch-default-2022.12.19-000001"
+    ],
+    "data_streams" : [
+      "ilm-history-5",
+      ".logs-deprecation.elasticsearch-default"
+    ],
+    "include_global_state" : true,
+    "state" : "SUCCESS",
+    "start_time" : "2022-12-19T21:35:54.837Z",
+    "start_time_in_millis" : 1671485754837,
+    "end_time" : "2022-12-19T21:35:55.838Z",
+    "end_time_in_millis" : 1671485755838,
+    "duration_in_millis" : 1001,
+    "failures" : [ ],
+    "shards" : {
+      "total" : 4,
+      "failed" : 0,
+      "successful" : 4
+    },
+    "feature_states" : [
+      {
+        "feature_name" : "geoip",
+        "indices" : [
+          ".geoip_databases"
+        ]
+      }
+    ]
+  }
+}
+```
+#### Список файлов в директории после создания snapshot'а
+```bash
+❯ docker exec -it elastic7 ls -lh /mount/backups/snapshots
+total 48K
+-rw-rw-r-- 1 elasticsearch root 1.5K Dec 19 21:35 index-0
+-rw-rw-r-- 1 elasticsearch root    8 Dec 19 21:35 index.latest
+drwxrwxr-x 6 elasticsearch root 4.0K Dec 19 21:35 indices
+-rw-rw-r-- 1 elasticsearch root  29K Dec 19 21:35 meta-X5bnxVTcSiOsdEwz8saEow.dat
+-rw-rw-r-- 1 elasticsearch root  721 Dec 19 21:35 snap-X5bnxVTcSiOsdEwz8saEow.dat
+```
+#### Удаление индекса `test` и создание индекса `test2`
+```bash
+❯ curl -X DELETE "localhost:9200/test?pretty"           
+{
+  "acknowledged" : true
+}
+```
+```bash
+❯ curl -X PUT "localhost:9200/test2?pretty" -H 'Content-Type: application/json' -d' { "settings": { "number_of_shards": 1, "number_of_replicas": 0 } } '
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "test2"
+}
+❯ curl -X GET "localhost:9200/_cat/indices?pretty"
+green open .geoip_databases xMXnElRARLei4U4tUJFufQ 1 0 40 0 38.2mb 38.2mb
+green open test2            Z-GInPoWTaCVPBeRxMyLTg 1 0  0 0   226b   226b
+```
+#### Восстановление кластера в исходное состояние из snapshot'а
+##### Подготовительные действия перед восстановлением (отключение индексации и отключение различных служб elasticsearch)
+```bash
+❯ curl -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+    "ingest.geoip.downloader.enabled": false
+  }
+}
+'
+
+{
+  "acknowledged" : true,
+  "persistent" : {
+    "ingest" : {
+      "geoip" : {
+        "downloader" : {
+          "enabled" : "false"
+        }
+      }
+    }
+  },
+  "transient" : { }
+}
+❯ curl -X POST "localhost:9200/_ilm/stop?pretty"
+
+{
+  "acknowledged" : true
+}
+❯ curl -X POST "localhost:9200/_ml/set_upgrade_mode?enabled=true&pretty"
+
+{
+  "acknowledged" : true
+}
+❯ curl -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+    "xpack.monitoring.collection.enabled": false
+  }
+}
+'
+
+{
+  "acknowledged" : true,
+  "persistent" : {
+    "xpack" : {
+      "monitoring" : {
+        "collection" : {
+          "enabled" : "false"
+        }
+      }
+    }
+  },
+  "transient" : { }
+}
+❯ curl -X POST "localhost:9200/_watcher/_stop?pretty"
+
+{
+  "acknowledged" : true
+}
+❯ curl -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+    "action.destructive_requires_name": false
+  }
+}
+'
+
+{
+  "acknowledged" : true,
+  "persistent" : {
+    "action" : {
+      "destructive_requires_name" : "false"
+    }
+  },
+  "transient" : { }
+}
+❯ curl -X DELETE "localhost:9200/_data_stream/*?expand_wildcards=all&pretty"
+
+{
+  "acknowledged" : true
+}
+❯ curl -X DELETE "localhost:9200/*?expand_wildcards=all&pretty"
+
+{
+  "acknowledged" : true
+}
+```
+##### Команда восстановления
+```bash
+❯ curl -X POST "localhost:9200/_snapshot/netology_backup/my_snapshot_2022.12.19/_restore?pretty" -H 'Content-Type: application/json' -d'
+{
+  "indices": "*",
+  "include_global_state": true
+}
+'
+
+{
+  "accepted" : true
+}
+```
+##### Действия после восстановления 
+```bash
+❯ curl -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+    "ingest.geoip.downloader.enabled": true
+  }
+}
+'
+
+{
+  "acknowledged" : true,
+  "persistent" : {
+    "ingest" : {
+      "geoip" : {
+        "downloader" : {
+          "enabled" : "true"
+        }
+      }
+    }
+  },
+  "transient" : { }
+}
+❯ curl -X POST "localhost:9200/_ilm/start?pretty"
+
+{
+  "acknowledged" : true
+}
+❯ curl -X POST "localhost:9200/_ml/set_upgrade_mode?enabled=false&pretty"
+
+{
+  "acknowledged" : true
+}
+❯ curl -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+    "xpack.monitoring.collection.enabled": true
+  }
+}
+'
+
+{
+  "acknowledged" : true,
+  "persistent" : {
+    "xpack" : {
+      "monitoring" : {
+        "collection" : {
+          "enabled" : "true"
+        }
+      }
+    }
+  },
+  "transient" : { }
+}
+❯ curl -X POST "localhost:9200/_watcher/_start?pretty"
+
+{
+  "acknowledged" : true
+}
+❯ curl -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+    "action.destructive_requires_name": null
+  }
+}
+'
+
+{
+  "acknowledged" : true,
+  "persistent" : { },
+  "transient" : { }
+}
+```
+ ##### Индексы после восстановления
+```bash
+❯ curl -X GET "localhost:9200/_cat/indices?pretty"
+green open .geoip_databases            KkgOdxp-T8yZCLM23Wqh9A 1 0 40 0  38.2mb  38.2mb
+green open test                        K6L4QmkXQuWU5zDImqtLPw 1 0  0 0    226b    226b
+```
+Как можно видеть, состояние кластера на момент сделанного snapshot'а возвращено и поэтому индекс `test2` отсутствует.
