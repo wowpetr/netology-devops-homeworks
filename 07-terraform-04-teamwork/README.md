@@ -17,7 +17,7 @@
 ### Решение
 
 1. Создал аккаунт на Terraform Cloud и создал организацию `plosev-netology-homework`.
-1. Создал локальный репозиторий git c файлами конфигурации Terraform (Yandex провайдер) через `git init -b main`. Репозиторий был позднее отправлен на GitHub с помощью `gh repo create`, с которым можно ознакомиться по [ссылке](https://github.com/wowpetr/tfc-yandex-netology-homework/tree/v1).
+1. Создал локальный репозиторий git c файлами конфигурации Terraform (Yandex провайдер) через `git init -b main`. Репозиторий был позднее отправлен на GitHub с помощью `gh repo create`. С репозиторием можно ознакомиться по [ссылке](https://github.com/wowpetr/tfc-yandex-netology-homework/tree/v1).
 1. Выполнил `terraform init` из локального репозитория для создания workspace на Terraform cloud.
 1. Добавил переменные: `provider_token`, `provider_folder_id` и `provider_cloud_id` в настройки созданного workspace для доступа к Yandex Cloud. 
 1. Выполнил `terraform plan` и `terraform apply` для создания инфрастуктуры через CLI:  
