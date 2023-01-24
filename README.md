@@ -40,5 +40,6 @@
 [6.5 Elasticsearch](06-db-05-elasticsearch/README.md)  
 
 7. Облачная инфраструктура. Terraform.  
+[7.4 Средства командной работы над инфраструктурой](07-terraform-04-teamwork/README.md)  
 [7.5 Основы golang](07-terraform-05-golang/README.md)  
 [7.6 Написание собственных провайдеров для Terraform](07-terraform-06-providers/README.md)  

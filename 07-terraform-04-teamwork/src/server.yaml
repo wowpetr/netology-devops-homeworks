@@ -1,0 +1,4 @@
+repos:
+- id: github.com/wowpetr/netology-devops-homeworks
+  allow_custom_workflows: true
+  repo_locking: false
