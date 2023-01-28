@@ -292,7 +292,6 @@
 
 3. Запустите `playbook`, убедитесь, что для нужных хостов применился новый `fact`.
     #### Решение
-    Новое значение `some_fact` не применится так как у нас нет хостов в группе `all`. У нас `centos7` в группе `el`, `ubuntu` в группе `deb`, а новый хост в группе `local`. Поэтому, видимо, ошибка в задании.
     ```
     ❯ ansible-playbook -i inventory/prod.yml site.yml --ask-vault-pass
     Vault password: 
@@ -324,4 +323,13 @@
     ok: [ubuntu] => {
         "msg": "deb default fact"
     }
+    ok: [local-test-1] => {
+        "msg": "PaSSw0rd"
+    }
+
+    PLAY RECAP **************************************************************************************************************************************************************************************************
+    centos7                    : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    local-test-1               : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
     ```
+    Новое значение `PaSSw0rd` применилось.
