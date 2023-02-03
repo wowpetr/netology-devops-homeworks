@@ -1,0 +1,11 @@
+---
+clickhouse:
+  hosts:
+    clickhouse-01:
+      ansible_host: 51.250.90.17 
+      ansible_user: wp
+vector:
+  hosts:
+    vector-01:
+      ansible_host: 84.201.134.234 
+      ansible_user: wp
