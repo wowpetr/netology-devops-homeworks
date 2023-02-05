@@ -1,0 +1,221 @@
+---
+- name: Install Clickhouse
+  hosts: clickhouse
+  gather_facts: true
+  tags: "clickhouse"
+
+  handlers:
+    - name: Start clickhouse service
+      become: true
+      ansible.builtin.service:
+        name: clickhouse-server
+        state: restarted
+
+  tasks:
+
+    - name: Get clickhouse distrib
+      ansible.builtin.get_url:
+        url: "https://packages.clickhouse.com/rpm/stable/{{ item }}-{{ clickhouse_version }}.{{ ansible_architecture }}.rpm"
+        dest: "./{{ item }}-{{ clickhouse_version }}.rpm"
+      with_items: "{{ clickhouse_packages }}"
+
+    - name: Install clickhouse packages
+      become: true
+      ansible.builtin.yum:
+        name:
+          - clickhouse-common-static-{{ clickhouse_version }}.rpm
+          - clickhouse-client-{{ clickhouse_version }}.rpm
+          - clickhouse-server-{{ clickhouse_version }}.rpm
+        disable_gpg_check: true
+      notify: Start clickhouse service
+
+    - name: Copy lighthouse config
+      become: true
+      ansible.builtin.copy:
+        src: ./config/lh.xml
+        dest: /etc/clickhouse-server/config.d/
+      notify: Start clickhouse service
+
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+    - name: Create database
+      ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
+      register: create_db
+      failed_when: create_db.rc != 0 and create_db.rc != 82
+      changed_when: create_db.rc == 0
+
+- name: Install Vector
+  hosts: vector
+  gather_facts: true
+  tags: "vector"
+
+  handlers:
+    - name: Start vector service
+      become: true
+      ansible.builtin.service:
+        name: vector
+        state: restarted
+
+  tasks:
+
+    - name: Download Vector archive
+      ansible.builtin.get_url:
+        url: "https://packages.timber.io/vector/{{ vector_version_major }}/vector-{{ ansible_architecture }}-unknown-linux-musl.tar.gz"
+        dest: "./vector-{{ ansible_architecture }}-unknown-linux-musl.tar.gz"
+
+    - name: Ensure group 'vector' exists
+      become: true
+      ansible.builtin.group:
+        name: vector
+
+    - name: Add the user 'vector'
+      become: true
+      ansible.builtin.user:
+        name: vector
+        group: vector
+
+    - name: Create the app directory for Vector
+      become: true
+      ansible.builtin.file:
+        path: /opt/vector
+        state: directory
+        owner: vector
+        group: vector
+
+    - name: Create the data directory for Vector
+      become: true
+      ansible.builtin.file:
+        path: /var/lib/vector
+        state: directory
+        owner: vector
+        group: vector
+
+    - name: Create the config directory for Vector
+      become: true
+      ansible.builtin.file:
+        path: /etc/vector
+        state: directory
+        owner: vector
+        group: vector
+
+    - name: Extract vector
+      become: true
+      ansible.builtin.unarchive:
+        src: "/home/wp/vector-{{ ansible_architecture }}-unknown-linux-musl.tar.gz"
+        dest: /opt/vector
+        remote_src: true
+        extra_opts: [--strip-components=2]
+        owner: vector
+        group: vector
+
+    - name: Template a file to /etc/vector/vector.toml
+      become: true
+      ansible.builtin.template:
+        src: ./template/vector.toml
+        dest: /etc/vector/vector.toml
+        owner: root
+        group: vector
+        mode: '0644'
+      notify: Start vector service
+
+    - name: Copy vector executable file to /usr/bin
+      become: true
+      ansible.builtin.copy:
+        src: /opt/vector/bin/vector
+        dest: /usr/bin
+        remote_src: true
+        mode: preserve
+
+    - name: Copy systemd service
+      become: true
+      ansible.builtin.copy:
+        src: /opt/vector/etc/systemd/vector.service
+        dest: /etc/systemd/system
+        remote_src: true
+        mode: preserve
+
+- name: Install Lighthouse
+  become: true
+  hosts: lighthouse
+  gather_facts: true
+  tags: "lighthouse"
+
+  pre_tasks:
+
+    - name: Install nginx
+      ansible.builtin.yum:
+        name: nginx
+        state: present
+
+    - name: Copy custom nginx.conf
+      ansible.builtin.template:
+        src: ./template/nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+      notify: Restart nginx
+
+    - name: Set up nginx config directory
+      ansible.builtin.file:
+        path: /etc/nginx/{{ item }}
+        state: directory
+      with_items:
+        - sites-available
+        - sites-enabled
+
+    - name: Copy nginx lighthouse.conf
+      ansible.builtin.template:
+        src: ./template/lighthouse.conf.j2
+        dest: /etc/nginx/sites-available/{{ domain }}
+        owner: '{{ nginx_user }}'
+        group: '{{ nginx_user }}'
+        mode: 0644
+      notify: Restart nginx
+
+    - name: Activate the lighthouse nginx site
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/{{ domain }}
+        dest: /etc/nginx/sites-enabled/{{ domain }}
+        state: link
+
+    - name: Install git
+      ansible.builtin.yum:
+        name: git
+        state: present
+
+  handlers:
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+  tasks:
+
+    - name: Create www directory
+      ansible.builtin.file:
+        path: /var/www/{{ domain }}
+        state: directory
+        mode: 0775
+
+    - name: Set SELinux context
+      community.general.sefcontext:
+        target: '/var/www/(/.*)?'
+        setype: httpd_sys_content_t
+        state: present
+
+    - name: Clone lighthouse
+      ansible.builtin.git:
+        repo: 'https://github.com/VKCOM/lighthouse.git'
+        dest: /var/www/{{ domain }}
+        version: master
+        update: false
+
+    - name: Set the permissions to all www files and directories
+      ansible.builtin.file:
+        path: /var/www
+        recurse: true
+        owner: '{{ nginx_user }}'
+        group: '{{ nginx_user }}'
+        mode: u=rwX,g=rX,o=rX
+
+    - name: Apply SELinux file context to www
+      ansible.builtin.command: restorecon -irv /var/www

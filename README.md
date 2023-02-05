@@ -47,3 +47,4 @@
 8. CI, мониторинг и управление конфигурациями  
 [8.1 Введение в Ansible](08-ansible-01-base/README.md)  
 [8.2 Работа с Playbook](08-ansible-02-playbook/README.md)  
+[8.3 Использование Yandex Cloud](08-ansible-03-yandex/README.md)  
