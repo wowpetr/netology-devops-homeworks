@@ -21,8 +21,8 @@
 
 ### Решение
 
-#### Ссылка на playbook
-[Ссылка](./playbook/)
+#### Ссылка на описание playbook
+[Ссылка](./playbook/README.md)
 
 #### Описание playbook (play установки lighthouse)
 ```yaml
@@ -111,8 +111,6 @@
     - name: Apply SELinux file context to www # восстановление SELinux разрешений для /var/www
       ansible.builtin.command: restorecon -irv /var/www # команда восстановления
 ```
-
-
 
 #### Ссылка на terraform
 [Ссылка](./terraform/)
