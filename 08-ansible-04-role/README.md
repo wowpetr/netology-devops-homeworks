@@ -34,4 +34,4 @@
 
 - [Ссылка на роль vector](https://github.com/wowpetr/ansible-vector/tree/0.1-beta)
 - [Ссылка на роль lighthouse](https://github.com/wowpetr/ansible-lighthouse/tree/0.1-beta)
-- [Ссылка на playbook](./playbook/README.md)
+- [Ссылка на playbook](./playbook)
