@@ -616,6 +616,8 @@
     ubuntu                     : ok=4    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
     ```
 5. Добавьте новый тег на коммит с рабочим сценарием в соответствии с семантическим версионированием.
+    #### Решение
+    [Ссылка репозиторий vector](https://github.com/wowpetr/ansible-vector/tree/0.2-beta)
 
 ### Tox
 
