@@ -130,7 +130,7 @@ wowpetr.devops1:1.0.0 was installed successfully
 **Шаг 16.** Запустите playbook, убедитесь, что он работает.
 #### Решение
 ```bash
-~/temp-netology-homeworks/08-ansible-06-module/wowpetr/devops1 ❯ ansible-playbook wowpetr.devops1
+~/temp-netology-homeworks/08-ansible-06-module/wowpetr/devops1 ❯ ansible-playbook wowpetr.devops1.test_module
 [WARNING]: No inventory was parsed, only implicit localhost is available
 [WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
 
