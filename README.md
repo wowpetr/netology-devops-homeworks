@@ -51,3 +51,6 @@
 [8.4 Работа с roles](08-ansible-04-role/README.md)  
 [8.5 Тестирование roles](08-ansible-05-testing/README.md)  
 [8.6 Создание собственных модулей](08-ansible-06-module/README.md)  
+
+9. Непрерывная разработка и интеграция
+[9.1 Жизненный цикл ПО](09-ci-01-intro/README.md)  
