@@ -140,18 +140,19 @@ INFO: ------------------------------------------------------------------------
 #### Решение
 maven-metadata.xml
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
 <metadata modelVersion="1.1.0">
-<groupId>netology</groupId>
-<artifactId>java</artifactId>
-<versioning>
-<latest>8_282</latest>
-<release>8_282</release>
-<versions>
-<version>8_102</version>
-<version>8_282</version>
-</versions>
-<lastUpdated>20230403225239</lastUpdated>
-</versioning>
+  <groupId>netology</groupId>
+  <artifactId>java</artifactId>
+  <versioning>
+    <latest>8_282</latest>
+    <release>8_282</release>
+    <versions>
+      <version>8_102</version>
+      <version>8_282</version>
+    </versions>
+    <lastUpdated>20230403225239</lastUpdated>
+  </versioning>
 </metadata>
 ```
 
