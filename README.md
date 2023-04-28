@@ -55,3 +55,4 @@
 9. Непрерывная разработка и интеграция  
 [9.1 Жизненный цикл ПО](09-ci-01-intro/README.md)  
 [9.3 Процессы CI/CD](09-ci-03-cicd/README.md)  
+[9.4 «Jenkins»](09-ci-04-jenkins/README.md)  
