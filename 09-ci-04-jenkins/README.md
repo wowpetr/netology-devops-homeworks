@@ -28,6 +28,11 @@
 ![](./img/dpipeline-scm-status.png)
 
 4. Создать Multibranch Pipeline на запуск `Jenkinsfile` из репозитория.
+### Решение:
+![](./img/mpipeline-prop.png)
+![](./img/mpipeline-status.png)
+![](./img/mpipeline-scanlog.png)
+
 5. Создать Scripted Pipeline, наполнить его скриптом из [pipeline](./pipeline).
 6. Внести необходимые изменения, чтобы Pipeline запускал `ansible-playbook` без флагов `--check --diff`, если не установлен параметр при запуске джобы (prod_run = True). По умолчанию параметр имеет значение False и запускает прогон с флагами `--check --diff`.
 7. Проверить работоспособность, исправить ошибки, исправленный Pipeline вложить в репозиторий в файл `ScriptedJenkinsfile`.
