@@ -18,6 +18,10 @@
 ![](./img/freestyle-status.png)
 
 2. Сделать Declarative Pipeline Job, который будет запускать `molecule test` из любого вашего репозитория с ролью.
+### Решение:
+![](./img/decpipeline-script.png)
+![](./img/dpipeline-status.png)
+
 3. Перенести Declarative Pipeline в репозиторий в файл `Jenkinsfile`.
 4. Создать Multibranch Pipeline на запуск `Jenkinsfile` из репозитория.
 5. Создать Scripted Pipeline, наполнить его скриптом из [pipeline](./pipeline).
